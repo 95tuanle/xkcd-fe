@@ -1,9 +1,13 @@
 import './App.css';
+import {useContext} from "react";
+import ApiContext from "./contexts/api-context";
+import Body from "./components/body";
 
 function App() {
-  return (<>
-    <p>Front end for XKCD API</p>
-  </>);
+  const apiUrl = useContext(ApiContext);
+  return <ApiContext.Provider value={apiUrl}>
+    <Body/>
+  </ApiContext.Provider>;
 }
 
 export default App;
