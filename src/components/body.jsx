@@ -18,6 +18,7 @@ const Body = () => {
       if (endpoint === 'latest') {
         setLatest(data.num);
       }
+      window.history.pushState({}, null, "/" + data.num);
     } catch (error) {
       console.error(error);
       setError('Error fetching comic');
@@ -25,8 +26,14 @@ const Body = () => {
   }, [apiUrl]);
 
   useEffect(() => {
-    fetchComic('latest').then(() => {
-    });
+    const num = window.location.pathname.split('/').pop();
+    if (num !== '') {
+      fetchComic(`num/${num}`).then(() => {
+      });
+    } else {
+      fetchComic('latest').then(() => {
+      });
+    }
     // const getComic = async () => {
     //   try {
     //     const response = await fetch(`${apiUrl}/xkcd/latest`);
