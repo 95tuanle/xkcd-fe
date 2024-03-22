@@ -1,10 +1,11 @@
 import {useCallback, useContext, useEffect, useState} from "react";
 import ApiContext from "../contexts/api-context";
+import Comic from "./comic";
 
 const Body = () => {
   const apiUrl = useContext(ApiContext);
-  const [comic, setComic] = useState(null);
   const [latest, setLatest] = useState(0);
+  const [comic, setComic] = useState(null);
   const [error, setError] = useState(null);
 
   const fetchComic = useCallback(async (endpoint) => {
@@ -13,7 +14,7 @@ const Body = () => {
     try {
       const response = await fetch(`${apiUrl}/xkcd/${endpoint}`);
       const data = await response.json();
-      data.transcript = parseComicStrip(data.transcript);
+      data.parsedTranscript = parseTranscript(data.transcript);
       setComic(data);
       if (endpoint === 'latest') {
         setLatest(data.num);
@@ -128,27 +129,11 @@ const Body = () => {
     <button onClick={showNextComic}>Next</button>
     <button onClick={showLastComic}>Last</button>
     {error && <span>{error}</span>}
-    {comic ? <div>
-      <h3>{comic["safe_title"]}</h3>
-      <h4>Created date: </h4>
-      <div>{comic.month}/{comic.day}/{comic.year}</div>
-      <h4>View count: </h4>
-      <div>{comic["view_count"]}</div>
-      <h4>Scene description: </h4>
-      {comic.transcript.sceneDescriptions.map((scene, index) => <p
-        key={index}>{scene}</p>)}
-      <h4>Dialogue: </h4>
-      {comic.transcript.dialogues.map((dialogue, index) => <p
-        key={index}>{dialogue.character}: {dialogue.dialogue}</p>)}
-      <h4>Alt text: </h4>
-      {comic.transcript.altText.map((alt, index) => <p key={index}>{alt}</p>)}
-      <img src={comic.img} alt={comic.alt}/>
-    </div> : <p>Loading...</p>}
+    {comic ? <Comic comic={comic}/> : <p>Loading...</p>}
   </>;
 }
 
-const parseComicStrip = (comicStrip) => {
-
+const parseTranscript = (comicStrip) => {
   const sceneDescriptionPattern = /\[\[(.*?)]]/g;
   const dialoguePattern = /(.*?): (.*?)\n/g;
   const altTextPattern = /\{\{(.*?)}}/g;
