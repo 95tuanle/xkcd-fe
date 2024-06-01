@@ -1,6 +1,6 @@
 import {createContext} from "react";
 
-const apiUrl = 'https://xkcd-be.cyclic.app';
+const apiUrl = 'https://xkcd-be.onrender.com';
 // const apiUrl = 'http://localhost:3000';
 
 
